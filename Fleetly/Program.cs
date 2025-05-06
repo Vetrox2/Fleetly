@@ -1,4 +1,18 @@
+using Fleetly.Data.Context;
+using Fleetly.Data.Repository;
+using Fleetly.Models.Settings;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<MongoDbSettings>(
+    builder.Configuration.GetSection("MongoDbSettings"));
+
+builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
+
+builder.Services.AddScoped<IInspectionRepository, InspectionRepository>();
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+builder.Services.AddScoped<IRouteRepository, RouteRepository>();
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
