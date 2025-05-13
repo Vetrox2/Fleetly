@@ -30,19 +30,6 @@ namespace Fleetly.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(string id)
-        {
-            var vehicle = await _vehicleService.GetByIdAsync(id);
-            return View(vehicle);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(string id, Vehicle vehicle)
-        {
-            await _vehicleService.UpdateAsync(id, vehicle);
-            return RedirectToAction(nameof(Index));
-        }
-
         public async Task<IActionResult> Delete(string id)
         {
             await _vehicleService.DeleteAsync(id);
@@ -51,7 +38,7 @@ namespace Fleetly.Controllers
 
         public IActionResult Details(string id)
         {
-            // Przekierowuje do innego kontrolera (np. VehicleDetailsController)
+            // To ma być do osobnego kontrolera
             return RedirectToAction("Details", "VehicleDetails", new { id });
         }
     }

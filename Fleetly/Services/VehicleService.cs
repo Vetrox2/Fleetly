@@ -1,27 +1,29 @@
-﻿using MongoDB.Driver;
-using Microsoft.Extensions.Options;
-using Fleetly.Models.Entities;
-using Fleetly.Models.Settings;
+﻿using Fleetly.Models.Entities;
+using Fleetly.Data.Repository;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class VehicleService : IVehicleService
 {
-    private readonly IMongoCollection<Vehicle> _vehicles;
+    private readonly IVehicleRepository _repo;
 
-    public VehicleService(IOptions<MongoDbSettings> settings, IMongoClient client)
+    public VehicleService(IVehicleRepository vehicleRepository)
     {
-        var database = client.GetDatabase(settings.Value.DatabaseName);
-        _vehicles = database.GetCollection<Vehicle>("Vehicles");
+        _repo = vehicleRepository;
     }
 
-    public async Task<List<Vehicle>> GetAsync() => await _vehicles.Find(_ => true).ToListAsync();
+    public async Task<List<Vehicle>> GetAsync() =>
+        await _repo.GetAllAsync();
 
     public async Task<Vehicle> GetByIdAsync(string id) =>
-        await _vehicles.Find(v => v.Id == id).FirstOrDefaultAsync();
+        await _repo.GetByIdAsync(id);
 
-    public async Task CreateAsync(Vehicle vehicle) => await _vehicles.InsertOneAsync(vehicle);
+    public async Task CreateAsync(Vehicle vehicle) =>
+        await _repo.CreateAsync(vehicle);
 
     public async Task UpdateAsync(string id, Vehicle vehicle) =>
-        await _vehicles.ReplaceOneAsync(v => v.Id == id, vehicle);
+        await _repo.UpdateAsync(id, vehicle);
 
-    public async Task DeleteAsync(string id) => await _vehicles.DeleteOneAsync(v => v.Id == id);
+    public async Task DeleteAsync(string id) =>
+        await _repo.DeleteAsync(id);
 }
