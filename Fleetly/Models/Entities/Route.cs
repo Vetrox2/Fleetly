@@ -1,10 +1,13 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Net;
 
 namespace Fleetly.Models.Entities
 {
     public class Route
     {
+        [BsonId]
+        public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
         public List<Address> Addresses { get; set; } = new();
 
         // Computed based on Addresses order
