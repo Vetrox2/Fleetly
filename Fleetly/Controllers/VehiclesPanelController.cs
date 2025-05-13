@@ -5,9 +5,9 @@ namespace Fleetly.Controllers
 {
     public class VehiclesPanelController : Controller
     {
-        private readonly VehicleService _vehicleService;
+        private readonly IVehicleService _vehicleService;
 
-        public VehiclesPanelController(VehicleService vehicleService)
+        public VehiclesPanelController(IVehicleService vehicleService)
         {
             _vehicleService = vehicleService;
         }
