@@ -12,7 +12,7 @@ builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
 builder.Services.AddScoped<IInspectionRepository, InspectionRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IRouteRepository, RouteRepository>();
-
+builder.Services.AddScoped<IVehicleService, VehicleService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

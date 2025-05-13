@@ -2,7 +2,7 @@
 
 namespace Fleetly.Controllers
 {
-    public class RouteController : Controller
+    public class VehicleDetailsController : Controller
     {
         public IActionResult Index()
         {
