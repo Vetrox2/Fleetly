@@ -1,4 +1,5 @@
 ﻿using Fleetly.Data.Repository;
+using Fleetly.Models.Dtos;
 using Fleetly.Models.Entities;
 using Fleetly.Services.Interfaces;
 
@@ -77,7 +78,7 @@ namespace Fleetly.Services
             await _routeRepo.UpdateRouteAsync(vehicleId, routeId, route);
         }
 
-        public async Task UpdateAddressAsync(string vehicleId, string routeId, int index, Address updatedAddress)
+        public async Task UpdateAddressAsync(string vehicleId, string routeId, int index, UpdateAddressDto dto)
         {
             var routes = await _routeRepo.GetByVehicleIdAsync(vehicleId);
             var route = routes.Find(r => r.Id == routeId);
@@ -86,7 +87,14 @@ namespace Fleetly.Services
             if (index < 0 || index >= route.Addresses.Count)
                 throw new ArgumentOutOfRangeException(nameof(index), "Invalid index");
 
-            route.Addresses[index] = updatedAddress;
+            route.Addresses[index] = new Address
+            {
+                Street = dto.Street,
+                City = dto.City,
+                PostalCode = dto.PostalCode,
+                Country = dto.Country
+            };
+
             await _routeRepo.UpdateRouteAsync(vehicleId, routeId, route);
         }
 

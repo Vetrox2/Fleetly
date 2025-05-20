@@ -3,6 +3,7 @@ using Fleetly.Models.Entities;
 using Fleetly.Models.ViewModels;
 using Fleetly.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace Fleetly.Controllers
 {
@@ -81,7 +82,7 @@ namespace Fleetly.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateAddress(string vehicleId, string routeId, int index, Address updatedAddress)
+        public async Task<IActionResult> UpdateAddress(string vehicleId, string routeId, int index, UpdateAddressDto updatedAddress)
         {
             await _routeService.UpdateAddressAsync(vehicleId, routeId, index, updatedAddress);
             return RedirectToAction(nameof(Details), new { id = vehicleId });
@@ -102,17 +103,25 @@ namespace Fleetly.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateInspection(string vehicleId, string inspectionId, Inspection updatedInspection)
+        public async Task<IActionResult> UpdateInspection(string vehicleId, string inspectionId, UpdateInspectionDto updatedInspection)
         {
             await _inspectionService.UpdateInspectionAsync(vehicleId, inspectionId, updatedInspection);
             return RedirectToAction(nameof(Details), new { id = vehicleId });
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddComment(string vehicleId, string inspectionId, Comment comment)
+        public async Task<IActionResult> AddComment(string vehicleId, string inspectionId, string text)
         {
+            var comment = new Comment
+            {
+                Id = ObjectId.GenerateNewId().ToString(),
+                Text = text,
+                Timestamp = DateTime.UtcNow
+            };
+
             await _inspectionService.AddCommentAsync(vehicleId, inspectionId, comment);
-            return RedirectToAction(nameof(Details), new { id = vehicleId });
+
+            return RedirectToAction("Details", new { id = vehicleId });
         }
 
         [HttpPost]
@@ -123,9 +132,9 @@ namespace Fleetly.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateComment(string vehicleId, string inspectionId, string commentId, string newText)
+        public async Task<IActionResult> UpdateComment(string vehicleId, string inspectionId, string commentId, UpdateCommentDto updatedComment)
         {
-            await _inspectionService.UpdateCommentAsync(vehicleId, inspectionId, commentId, newText);
+            await _inspectionService.UpdateCommentAsync(vehicleId, inspectionId, commentId, updatedComment);
             return RedirectToAction(nameof(Details), new { id = vehicleId });
         }
     }

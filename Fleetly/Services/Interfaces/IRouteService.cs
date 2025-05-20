@@ -1,4 +1,5 @@
-﻿using Fleetly.Models.Entities;
+﻿using Fleetly.Models.Dtos;
+using Fleetly.Models.Entities;
 
 namespace Fleetly.Services.Interfaces
 {
@@ -10,7 +11,7 @@ namespace Fleetly.Services.Interfaces
         Task AddAddressAsync(string vehicleId, string routeId, Address address);
         Task DeleteAddressAsync(string vehicleId, string routeId, string addressIndex);
         Task MoveAddressAsync(string vehicleId, string routeId, int index, string direction);
-        Task UpdateAddressAsync(string vehicleId, string routeId, int index, Address updatedAddress);
+        Task UpdateAddressAsync(string vehicleId, string routeId, int index, UpdateAddressDto dto);
 
     }
 }

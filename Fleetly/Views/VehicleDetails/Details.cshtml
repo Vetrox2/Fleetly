@@ -22,7 +22,7 @@
                     <input asp-for="Vehicle.Year" type="number" class="form-control" id="Year" />
                 </div>
                 <div class="col-12 text-end">
-                    <button type="submit" class="btn btn-primary">Save Vehicle</button>
+                    <button type="submit" class="btn btn-primary">Update Vehicle</button>
                 </div>
             </form>
         </div>
@@ -57,17 +57,20 @@
                                     {
                                         var addr = route.Addresses[i];
                                         <tr>
-                                            <td>@addr.Street</td>
-                                            <td>@addr.City</td>
-                                            <td>@addr.PostalCode</td>
-                                            <td>@addr.Country</td>
-                                            <td class="text-center">
-                                                <form asp-action="EditAddress" method="post" class="d-inline">
-                                                    <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
-                                                    <input type="hidden" name="routeId" value="@route.Id" />
-                                                    <input type="hidden" name="index" value="@i" />
-                                                    <button type="submit" class="btn btn-sm btn-warning">Edit</button>
-                                                </form>
+                                            <form asp-action="UpdateAddress" method="post">
+                                                <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
+                                                <input type="hidden" name="routeId" value="@route.Id" />
+                                                <input type="hidden" name="index" value="@i" />
+
+                                            <td><input name="updatedAddress.Street" value="@addr.Street" class="form-control form-control-sm" /></td>
+                                            <td><input name="updatedAddress.City" value="@addr.City" class="form-control form-control-sm" /></td>
+                                            <td><input name="updatedAddress.PostalCode" value="@addr.PostalCode" class="form-control form-control-sm" /></td>
+                                            <td><input name="updatedAddress.Country" value="@addr.Country" class="form-control form-control-sm" /></td>
+                                            <td class="d-flex gap-1">
+                                                <button type="submit" class="btn btn-sm btn-success">Update</button>
+                                            </td>
+                                            </form>
+                                            <td class="text-nowrap">
                                                 <form asp-action="MoveAddressUp" method="post" class="d-inline">
                                                     <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
                                                     <input type="hidden" name="routeId" value="@route.Id" />
@@ -148,76 +151,110 @@
                 @foreach (var insp in Model.Inspections)
                 {
                     <tr>
-                        <td>@insp.DatePerformed.ToShortDateString()</td>
-                        <td>
-                            <span class="badge @(insp.IsPassed ? "bg-success" : "bg-danger")">
-                                @(insp.IsPassed ? "Yes" : "No")
-                            </span>
+                        <td colspan="6">
+                            <form asp-action="UpdateInspection" method="post" class="row g-3 align-items-center mb-3">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
+                                <input type="hidden" name="inspectionId" value="@insp.Id" />
+
+                                <div class="col-md-3 col-sm-6">
+                                    <label class="form-label small">Date Performed</label>
+                                    <input name="updatedInspection.DatePerformed" type="date" value="@insp.DatePerformed.ToString("yyyy-MM-dd")" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-2 col-sm-6">
+                                    <div class="form-check mt-4">
+                                        <input name="updatedInspection.IsPassed" type="checkbox" class="form-check-input" @(insp.IsPassed ? "checked" : "") id="passedCheck_@insp.Id" />
+                                        <label class="form-check-label small" for="passedCheck_@insp.Id">Passed</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-sm-6">
+                                    <label class="form-label small">Valid Until</label>
+                                    <input name="updatedInspection.ValidUntil" type="date" value="@insp.ValidUntil.ToString("yyyy-MM-dd")" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-2 col-sm-3">
+                                    <button type="submit" class="btn btn-sm btn-success w-100">Update</button>
+                                </div>
+
+                                <div class="col-md-2 col-sm-3">
+                                    <form asp-action="DeleteInspection" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
+                                        <input type="hidden" name="inspectionId" value="@insp.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger w-100">Delete</button>
+                                    </form>
+                                </div>
+                            </form>
                         </td>
-                        <td>@insp.ValidUntil.ToShortDateString()</td>
-                        <td>
-                            <ul class="list-unstyled mb-2">
+                    </tr>
+
+                    <tr>
+                        <td colspan="6" class="p-3">
+                            <ul class="list-group mb-3">
                                 @for (int i = 0; i < insp.Comments.Count; i++)
                                 {
                                     var c = insp.Comments[i];
-                                    <li>
-                                        <small class="text-muted">@c.Timestamp.ToShortDateString():</small> @c.Text
-                                        <form asp-action="EditComment" method="post" class="d-inline ms-2">
-                                            <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
-                                            <input type="hidden" name="inspectionId" value="@insp.Id" />
-                                            <input type="hidden" name="commentIndex" value="@i" />
-                                            <button type="submit" class="btn btn-sm btn-warning btn-sm">Edit</button>
-                                        </form>
-                                        <form asp-action="DeleteComment" method="post" class="d-inline">
-                                            <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
-                                            <input type="hidden" name="inspectionId" value="@insp.Id" />
-                                            <input type="hidden" name="commentIndex" value="@i" />
-                                            <button type="submit" class="btn btn-sm btn-danger btn-sm">Delete</button>
-                                        </form>
+                                    <li class="list-group-item d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
+                                        <div class="comment-text">
+                                            <small class="text-muted d-block">@c.Timestamp.ToShortDateString():</small>
+                                            <span>@c.Text</span>
+                                        </div>
+                                        <div class="d-flex flex-column flex-sm-row gap-2">
+                                            <form asp-action="UpdateComment" method="post" class="d-flex gap-2 flex-grow-1">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
+                                                <input type="hidden" name="inspectionId" value="@insp.Id" />
+                                                <input type="hidden" name="commentId" value="@c.Id" />
+                                                <input name="dto.Text" value="@c.Text" class="form-control form-control-sm" />
+                                                <button type="submit" class="btn btn-sm btn-success">Update</button>
+                                            </form>
+
+                                            <form asp-action="DeleteComment" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
+                                                <input type="hidden" name="inspectionId" value="@insp.Id" />
+                                                <input type="hidden" name="commentIndex" value="@i" />
+                                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                            </form>
+                                        </div>
                                     </li>
                                 }
                             </ul>
+
                             <form asp-action="AddComment" method="post" class="d-flex gap-2">
+                                @Html.AntiForgeryToken()
                                 <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
                                 <input type="hidden" name="inspectionId" value="@insp.Id" />
-                                <input name="comment.Text" placeholder="Comment" class="form-control form-control-sm" />
-                                <button type="submit" class="btn btn-sm btn-outline-primary">Add</button>
-                            </form>
-                        </td>
-                        <td>
-                            <form asp-action="EditInspection" method="post" class="mb-1">
-                                <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
-                                <input type="hidden" name="inspectionId" value="@insp.Id" />
-                                <button type="submit" class="btn btn-sm btn-warning">Edit</button>
-                            </form>
-                            <form asp-action="DeleteInspection" method="post">
-                                <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
-                                <input type="hidden" name="inspectionId" value="@insp.Id" />
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                <input name="commentDto.Text" placeholder="Add a comment" class="form-control form-control-sm" style="max-width: 500px;" />
+                                <button type="submit" class="btn btn-sm btn-primary">Add</button>
                             </form>
                         </td>
                     </tr>
                 }
+
                 <tr>
-                    <td colspan="5">
-                        <form asp-action="AddInspection" method="post" class="row g-2 align-items-end">
+                    <td colspan="6">
+                        <form asp-action="AddInspection" method="post" class="row g-3 align-items-end mb-3">
+                            @Html.AntiForgeryToken()
                             <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
-                            <div class="col-md-3">
-                                <label class="form-label">Date</label>
+                            <div class="col-md-3 col-sm-6">
+                                <label class="form-label small">Date Performed</label>
                                 <input name="inspection.DatePerformed" type="date" class="form-control form-control-sm" required />
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-sm-6">
                                 <div class="form-check mt-4">
                                     <input name="inspection.IsPassed" class="form-check-input" type="checkbox" id="passedCheck" />
-                                    <label class="form-check-label small" for="passedCheck">Passed?</label>
+                                    <label class="form-check-label small" for="passedCheck">Passed</label>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Valid Until</label>
+                            <div class="col-md-3 col-sm-6">
+                                <label class="form-label small">Valid Until</label>
                                 <input name="inspection.ValidUntil" type="date" class="form-control form-control-sm" required />
                             </div>
-                            <div class="col-md-4 text-end">
-                                <button type="submit" class="btn btn-sm btn-success">Add Inspection</button>
+                            <div class="col-md-4 col-sm-6 text-end">
+                                <button type="submit" class="btn btn-sm btn-primary">Add Inspection</button>
                             </div>
                         </form>
                     </td>
