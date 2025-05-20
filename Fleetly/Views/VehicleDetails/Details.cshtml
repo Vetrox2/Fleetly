@@ -163,11 +163,22 @@
                                 </div>
 
                                 <div class="col-md-2 col-sm-6">
-                                    <div class="form-check mt-4">
-                                        <input name="updatedInspection.IsPassed" type="checkbox" class="form-check-input" @(insp.IsPassed ? "checked" : "") id="passedCheck_@insp.Id" />
-                                        <label class="form-check-label small" for="passedCheck_@insp.Id">Passed</label>
-                                    </div>
+                                    <label class="form-label small">Passed</label>
+                                    <select name="updatedInspection.IsPassed" class="form-select form-select-sm">
+                                        @if (insp.IsPassed)
+                                        {
+                                            <option value="true" selected>Yes</option>
+                                            <option value="false">No</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="true">Yes</option>
+                                            <option value="false" selected>No</option>
+                                        }
+                                    </select>
                                 </div>
+
+
 
                                 <div class="col-md-3 col-sm-6">
                                     <label class="form-label small">Valid Until</label>
@@ -207,7 +218,7 @@
                                                 <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
                                                 <input type="hidden" name="inspectionId" value="@insp.Id" />
                                                 <input type="hidden" name="commentId" value="@c.Id" />
-                                                <input name="dto.Text" value="@c.Text" class="form-control form-control-sm" />
+                                                <input name="updatedComment.Text" value="@c.Text" class="form-control form-control-sm" />
                                                 <button type="submit" class="btn btn-sm btn-success">Update</button>
                                             </form>
 
@@ -215,7 +226,7 @@
                                                 @Html.AntiForgeryToken()
                                                 <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
                                                 <input type="hidden" name="inspectionId" value="@insp.Id" />
-                                                <input type="hidden" name="commentIndex" value="@i" />
+                                                <input type="hidden" name="commentId" value="@c.Id" />
                                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                             </form>
                                         </div>
@@ -227,7 +238,7 @@
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
                                 <input type="hidden" name="inspectionId" value="@insp.Id" />
-                                <input name="commentDto.Text" placeholder="Add a comment" class="form-control form-control-sm" style="max-width: 500px;" />
+                                <input name="text" placeholder="Add a comment" class="form-control form-control-sm" style="max-width: 500px;" />
                                 <button type="submit" class="btn btn-sm btn-primary">Add</button>
                             </form>
                         </td>

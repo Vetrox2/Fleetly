@@ -33,6 +33,7 @@ namespace Fleetly.Services
 
          public async Task UpdateInspectionAsync(string vehicleId, string inspectionId, UpdateInspectionDto dto)
         {
+            //coś tu nie tak jest daty ustawia na jedna do tylu ale czy przeszła inspekcja działa
             var inspections = await _inspectionRepo.GetByVehicleIdAsync(vehicleId);
             var inspection = inspections.FirstOrDefault(i => i.Id == inspectionId);
             if (inspection == null) throw new KeyNotFoundException("Inspection not found");
