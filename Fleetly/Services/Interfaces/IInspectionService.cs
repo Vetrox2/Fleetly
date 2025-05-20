@@ -8,5 +8,9 @@ namespace Fleetly.Services.Interfaces
         Task AddInspectionAsync(string vehicleId, Inspection inspection);
         Task DeleteInspectionAsync(string vehicleId, string inspectionId);
         Task AddCommentAsync(string vehicleId, string inspectionId, Comment comment);
+        Task UpdateInspectionAsync(string vehicleId, string inspectionId, Inspection updatedInspection);
+        Task DeleteCommentAsync(string vehicleId, string inspectionId, string commentId);
+        Task UpdateCommentAsync(string vehicleId, string inspectionId, string commentId, string newText);
+
     }
 }

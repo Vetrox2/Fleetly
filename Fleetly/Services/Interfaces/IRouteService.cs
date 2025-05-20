@@ -9,5 +9,8 @@ namespace Fleetly.Services.Interfaces
         Task DeleteRouteAsync(string vehicleId, string routeId);
         Task AddAddressAsync(string vehicleId, string routeId, Address address);
         Task DeleteAddressAsync(string vehicleId, string routeId, string addressIndex);
+        Task MoveAddressAsync(string vehicleId, string routeId, int index, string direction);
+        Task UpdateAddressAsync(string vehicleId, string routeId, int index, Address updatedAddress);
+
     }
 }

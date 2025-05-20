@@ -55,5 +55,40 @@ namespace Fleetly.Services
                 throw new ArgumentOutOfRangeException(nameof(addressIndex), "Invalid address index");
             }
         }
+
+        public async Task MoveAddressAsync(string vehicleId, string routeId, int index, string direction)
+        {
+            var routes = await _routeRepo.GetByVehicleIdAsync(vehicleId);
+            var route = routes.Find(r => r.Id == routeId);
+            if (route == null) throw new KeyNotFoundException("Route not found");
+
+            var addresses = route.Addresses;
+            if (index < 0 || index >= addresses.Count)
+                throw new ArgumentOutOfRangeException(nameof(index), "Invalid index");
+
+            int newIndex = direction.ToLower() switch
+            {
+                "up" when index > 0 => index - 1,
+                "down" when index < addresses.Count - 1 => index + 1,
+                _ => throw new InvalidOperationException("Invalid move operation")
+            };
+
+            (addresses[index], addresses[newIndex]) = (addresses[newIndex], addresses[index]);
+            await _routeRepo.UpdateRouteAsync(vehicleId, routeId, route);
+        }
+
+        public async Task UpdateAddressAsync(string vehicleId, string routeId, int index, Address updatedAddress)
+        {
+            var routes = await _routeRepo.GetByVehicleIdAsync(vehicleId);
+            var route = routes.Find(r => r.Id == routeId);
+            if (route == null) throw new KeyNotFoundException("Route not found");
+
+            if (index < 0 || index >= route.Addresses.Count)
+                throw new ArgumentOutOfRangeException(nameof(index), "Invalid index");
+
+            route.Addresses[index] = updatedAddress;
+            await _routeRepo.UpdateRouteAsync(vehicleId, routeId, route);
+        }
+
     }
 }
