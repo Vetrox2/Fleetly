@@ -1,4 +1,5 @@
-﻿using Fleetly.Models.Entities;
+﻿using Fleetly.Models.Dtos;
+using Fleetly.Models.Entities;
 using Fleetly.Models.ViewModels;
 using Fleetly.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -38,9 +39,9 @@ namespace Fleetly.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateVehicle(string id, Vehicle model)
+        public async Task<IActionResult> UpdateVehicle(string id, UpdateVehicleDetailsDto vehicle)
         {
-            await _vehicleService.UpdateAsync(id, model);
+            await _vehicleService.UpdateAsync(id, vehicle);
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -73,6 +74,20 @@ namespace Fleetly.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> MoveAddress(string vehicleId, string routeId, int index, string direction)
+        {
+            await _routeService.MoveAddressAsync(vehicleId, routeId, index, direction);
+            return RedirectToAction(nameof(Details), new { id = vehicleId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAddress(string vehicleId, string routeId, int index, Address updatedAddress)
+        {
+            await _routeService.UpdateAddressAsync(vehicleId, routeId, index, updatedAddress);
+            return RedirectToAction(nameof(Details), new { id = vehicleId });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AddInspection(string vehicleId, Inspection inspection)
         {
             await _inspectionService.AddInspectionAsync(vehicleId, inspection);
@@ -87,9 +102,30 @@ namespace Fleetly.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> UpdateInspection(string vehicleId, string inspectionId, Inspection updatedInspection)
+        {
+            await _inspectionService.UpdateInspectionAsync(vehicleId, inspectionId, updatedInspection);
+            return RedirectToAction(nameof(Details), new { id = vehicleId });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AddComment(string vehicleId, string inspectionId, Comment comment)
         {
             await _inspectionService.AddCommentAsync(vehicleId, inspectionId, comment);
+            return RedirectToAction(nameof(Details), new { id = vehicleId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteComment(string vehicleId, string inspectionId, string commentId)
+        {
+            await _inspectionService.DeleteCommentAsync(vehicleId, inspectionId, commentId);
+            return RedirectToAction(nameof(Details), new { id = vehicleId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateComment(string vehicleId, string inspectionId, string commentId, string newText)
+        {
+            await _inspectionService.UpdateCommentAsync(vehicleId, inspectionId, commentId, newText);
             return RedirectToAction(nameof(Details), new { id = vehicleId });
         }
     }
