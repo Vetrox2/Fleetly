@@ -2,6 +2,7 @@
 using Fleetly.Data.Repository;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Fleetly.Models.Dtos;
 
 public class VehicleService : IVehicleService
 {
@@ -21,7 +22,7 @@ public class VehicleService : IVehicleService
     public async Task CreateAsync(Vehicle vehicle) =>
         await _repo.CreateAsync(vehicle);
 
-    public async Task UpdateAsync(string id, Vehicle vehicle) =>
+    public async Task UpdateAsync(string id, UpdateVehicleDetailsDto vehicle) =>
         await _repo.UpdateAsync(id, vehicle);
 
     public async Task DeleteAsync(string id) =>

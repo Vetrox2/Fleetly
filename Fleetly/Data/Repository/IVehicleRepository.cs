@@ -1,4 +1,5 @@
-﻿using Fleetly.Models.Entities;
+﻿using Fleetly.Models.Dtos;
+using Fleetly.Models.Entities;
 using System.Linq.Expressions;
 
 namespace Fleetly.Data.Repository
@@ -9,7 +10,7 @@ namespace Fleetly.Data.Repository
         Task<Vehicle?> GetByIdAsync(string id);
         Task<List<Vehicle>> FilterAsync(Expression<Func<Vehicle, bool>> predicate);
         Task CreateAsync(Vehicle vehicle);
-        Task UpdateAsync(string id, Vehicle vehicle);
+        Task UpdateAsync(string id, UpdateVehicleDetailsDto vehicle);
         Task DeleteAsync(string id);
     }
 }

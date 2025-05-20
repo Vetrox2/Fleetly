@@ -1,4 +1,5 @@
 ﻿using Fleetly.Data.Context;
+using Fleetly.Models.Dtos;
 using Fleetly.Models.Entities;
 using MongoDB.Driver;
 using System.Linq.Expressions;
@@ -25,8 +26,16 @@ namespace Fleetly.Data.Repository
         public async Task CreateAsync(Vehicle vehicle) =>
             await _collection.InsertOneAsync(vehicle);
 
-        public async Task UpdateAsync(string id, Vehicle vehicle) =>
-            await _collection.ReplaceOneAsync(v => v.Id == id, vehicle);
+        public async Task UpdateAsync(string id, UpdateVehicleDetailsDto dto)
+        {
+            var update = Builders<Vehicle>.Update
+                .Set(v => v.Make, dto.Make)
+                .Set(v => v.Model, dto.Model)
+                .Set(v => v.Year, dto.Year);
+
+            await _collection.UpdateOneAsync(v => v.Id == id, update);
+        }
+
 
         public async Task DeleteAsync(string id) =>
             await _collection.DeleteOneAsync(v => v.Id == id);
