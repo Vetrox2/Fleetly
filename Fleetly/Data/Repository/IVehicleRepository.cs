@@ -12,5 +12,8 @@ namespace Fleetly.Data.Repository
         Task CreateAsync(Vehicle vehicle);
         Task UpdateAsync(string id, UpdateVehicleDetailsDto vehicle);
         Task DeleteAsync(string id);
+        Task<List<Vehicle>> GetFilteredAsync(string? registration, string? make, string? model, string? sortColumn, bool sortDescending);
+        Task<List<string>> GetAllMakesAsync();
+        Task<List<string>> GetAllModelsAsync();
     }
 }

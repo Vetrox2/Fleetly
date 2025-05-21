@@ -12,10 +12,10 @@ namespace Fleetly.Controllers
             _vehicleService = vehicleService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchRegistration, string? selectedMake, string? selectedModel, string? sortColumn, bool sortDescending = false)
         {
-            var vehicles = await _vehicleService.GetAsync();
-            return View(vehicles);
+            var viewModel = await _vehicleService.GetVehicleListAsync(searchRegistration, selectedMake, selectedModel, sortColumn, sortDescending);
+            return View(viewModel);
         }
 
         public IActionResult Create()

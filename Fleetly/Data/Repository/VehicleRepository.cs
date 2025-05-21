@@ -37,8 +37,46 @@ namespace Fleetly.Data.Repository
             await _collection.UpdateOneAsync(v => v.Id == id, update);
         }
 
-
         public async Task DeleteAsync(string id) =>
             await _collection.DeleteOneAsync(v => v.Id == id);
+
+        public async Task<List<Vehicle>> GetFilteredAsync(string? registration, string? make, string? model, string? sortColumn, bool sortDescending)
+        {
+            var filterBuilder = Builders<Vehicle>.Filter;
+            var filter = FilterDefinition<Vehicle>.Empty;
+
+            if (!string.IsNullOrWhiteSpace(registration))
+                filter &= filterBuilder.Regex(v => v.Registration, new MongoDB.Bson.BsonRegularExpression($".*{registration}.*", "i"));
+
+            if (!string.IsNullOrWhiteSpace(make))
+                filter &= filterBuilder.Eq(v => v.Make, make);
+
+            if (!string.IsNullOrWhiteSpace(model))
+                filter &= filterBuilder.Eq(v => v.Model, model);
+
+            var vehiclesQuery = _collection.Find(filter);
+
+            if (!string.IsNullOrEmpty(sortColumn))
+            {
+                var sortBuilder = Builders<Vehicle>.Sort;
+                var sortDefinition = sortDescending
+                    ? sortBuilder.Descending(sortColumn)
+                    : sortBuilder.Ascending(sortColumn);
+
+                vehiclesQuery = vehiclesQuery.Sort(sortDefinition);
+            }
+
+            return await vehiclesQuery.ToListAsync();
+        }
+
+        public async Task<List<string>> GetAllMakesAsync()
+        {
+            return await _collection.Distinct<string>("Make", FilterDefinition<Vehicle>.Empty).ToListAsync();
+        }
+
+        public async Task<List<string>> GetAllModelsAsync()
+        {
+            return await _collection.Distinct<string>("Model", FilterDefinition<Vehicle>.Empty).ToListAsync();
+        }
     }
 }
