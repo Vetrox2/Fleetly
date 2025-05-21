@@ -23,6 +23,7 @@ namespace Fleetly.Services
 
         public async Task AddInspectionAsync(string vehicleId, Inspection inspection)
         {
+            UpdateInspectionDatesToUTC(inspection);
             await _inspectionRepo.AddInspectionAsync(vehicleId, inspection);
         }
 
@@ -33,14 +34,14 @@ namespace Fleetly.Services
 
          public async Task UpdateInspectionAsync(string vehicleId, string inspectionId, UpdateInspectionDto dto)
         {
-            //coś tu nie tak jest daty ustawia na jedna do tylu ale czy przeszła inspekcja działa
             var inspections = await _inspectionRepo.GetByVehicleIdAsync(vehicleId);
-            var inspection = inspections.FirstOrDefault(i => i.Id == inspectionId);
-            if (inspection == null) throw new KeyNotFoundException("Inspection not found");
+            var inspection = inspections.FirstOrDefault(i => i.Id == inspectionId) ?? throw new KeyNotFoundException("Inspection not found");
 
             inspection.DatePerformed = dto.DatePerformed;
             inspection.IsPassed = dto.IsPassed;
             inspection.ValidUntil = dto.ValidUntil;
+
+            UpdateInspectionDatesToUTC(inspection);
 
             await _inspectionRepo.UpdateInspectionAsync(vehicleId, inspectionId, inspection);
         }
@@ -76,6 +77,12 @@ namespace Fleetly.Services
             comment.Timestamp = DateTime.UtcNow;
 
             await _inspectionRepo.UpdateInspectionAsync(vehicleId, inspectionId, inspection);
+        }
+
+        private void UpdateInspectionDatesToUTC(Inspection inspection)
+        {
+            inspection.DatePerformed = DateTime.SpecifyKind(inspection.DatePerformed, DateTimeKind.Utc);
+            inspection.ValidUntil = DateTime.SpecifyKind(inspection.ValidUntil, DateTimeKind.Utc);
         }
     }
 }
