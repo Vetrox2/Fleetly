@@ -35,11 +35,5 @@ namespace Fleetly.Controllers
             await _vehicleService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
-
-        public IActionResult Details(string id)
-        {
-            // To ma być do osobnego kontrolera
-            return RedirectToAction("Details", "VehicleDetails", new { id });
-        }
     }
 }

@@ -11,6 +11,7 @@
             <th>Zdjęcie</th>
             <th>Marka</th>
             <th>Model</th>
+            <th>Rok Produkcji</th>
             <th>Akcje</th>
         </tr>
     </thead>
@@ -18,14 +19,15 @@
         @foreach (var vehicle in Model)
         {
             <tr>
-               @*  <td>
-                    <img src="@vehicle.ImageUrl" width="100" />
-                </td> *@
+                <td>
+                    <img src="" width="100" />
+                </td>
                 <td>@vehicle.Make</td>
                 <td>@vehicle.Model</td>
+                <td>@vehicle.Year</td>
                 <td>
+                    <a asp-controller="VehicleDetails" asp-action="Details" asp-route-id="@vehicle.Id" class="btn btn-sm btn-info">Szczegóły</a>
                     <a asp-action="Delete" asp-route-id="@vehicle.Id" class="btn btn-sm btn-danger">Usuń</a>
-                    <a asp-action="Details" asp-route-id="@vehicle.Id" class="btn btn-sm btn-info">Szczegóły</a>
                 </td>
             </tr>
         }
