@@ -1,0 +1,93 @@
+﻿@using Fleetly.Models.ViewModels
+@model VehicleListViewModel
+
+
+<h2>Panel Samochodów</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3  mt-3">Dodaj Samochód</a>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="searchRegistration" class="form-control" placeholder="Rejestracja"
+               value="@Model.SearchRegistration" />
+    </div>
+    <div class="col-md-3">
+        <select name="selectedMake" class="form-select">
+            <option value="">Wszystkie marki</option>
+            @foreach (var make in Model.AllMakes)
+            {
+                <option value="@make" selected="@(make == Model.SelectedMake ? "selected" : null)">@make</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="selectedModel" class="form-select">
+            <option value="">Wszystkie modele</option>
+            @foreach (var m in Model.AllModels)
+            {
+                <option value="@m" selected="@(m == Model.SelectedModel ? "selected" : null)">@m</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3 d-flex">
+        <button type="submit" class="btn btn-primary">Szukaj / Filtruj</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Resetuj</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Zdjęcie</th>
+            @foreach (var col in new[] { "Make", "Model", "Registration", "Year" })
+            {
+                var isCurrent = Model.SortColumn == col;
+                var newDescending = isCurrent && !Model.SortDescending;
+
+                <th>
+                    <a asp-action="Index"
+                       asp-route-searchRegistration="@Model.SearchRegistration"
+                       asp-route-selectedMake="@Model.SelectedMake"
+                       asp-route-selectedModel="@Model.SelectedModel"
+                       asp-route-sortColumn="@col"
+                       asp-route-sortDescending="@newDescending">
+                        @col
+                        @if (isCurrent)
+                        {
+                            <span class="ms-1">@((Model.SortDescending ? "▼" : "▲"))</span>
+                        }
+                    </a>
+                </th>
+            }
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var vehicle in Model.Vehicles)
+        {
+            <tr>
+                <td>
+                    @if (vehicle.Photo != null)
+                    {
+                        var base64 = Convert.ToBase64String(vehicle.Photo);
+                        var imageSrc = $"data:image/png;base64,{base64}";
+                        <img src="@imageSrc" width="100" />
+                    }
+                    else
+                    {
+                        <span>Brak zdjęcia</span>
+                    }
+                </td>
+                <td>@vehicle.Make</td>
+                <td>@vehicle.Model</td>
+                <td>@vehicle.Registration</td>
+                <td>@vehicle.Year</td>
+                <td>
+                    <a asp-controller="VehicleDetails" asp-action="Details" asp-route-id="@vehicle.Id" class="btn btn-sm btn-info">Szczegóły</a>
+                    <a asp-action="Delete" asp-route-id="@vehicle.Id" class="btn btn-sm btn-danger">Usuń</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
