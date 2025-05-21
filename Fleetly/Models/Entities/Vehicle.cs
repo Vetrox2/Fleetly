@@ -10,6 +10,7 @@ namespace Fleetly.Models.Entities
 
         public string Make { get; set; } = null!;
         public string Model { get; set; } = null!;
+        public string Registration { get; set; } = null!;
         public int Year { get; set; }
 
         public List<Route> Routes { get; set; } = new();
