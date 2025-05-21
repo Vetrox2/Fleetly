@@ -33,8 +33,8 @@
         <table class="table table-striped table-bordered align-middle">
             <thead class="table-dark">
                 <tr>
-                    <th style="width: 65%">Addresses</th>
-                    <th style="width: 35%">Actions</th>
+                    <th style="width: 90%">Addresses</th>
+                    <th style="width: 10%">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,7 +49,7 @@
                                         <th>City</th>
                                         <th>Postal Code</th>
                                         <th>Country</th>
-                                        <th>Actions</th>
+                                        <th colspan="2">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -71,17 +71,19 @@
                                             </td>
                                             </form>
                                             <td class="text-nowrap">
-                                                <form asp-action="MoveAddressUp" method="post" class="d-inline">
+                                                <form asp-action="MoveAddress" method="post" class="d-inline">
                                                     <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
                                                     <input type="hidden" name="routeId" value="@route.Id" />
                                                     <input type="hidden" name="index" value="@i" />
-                                                    <button type="submit" class="btn btn-sm btn-secondary">↑</button>
+                                                    <input type="hidden" name="direction" value="up" />
+                                                    <button type="submit" class="btn btn-sm btn-secondary" @(i == 0 ? "disabled" : "") >↑</button>
                                                 </form>
-                                                <form asp-action="MoveAddressDown" method="post" class="d-inline">
+                                                <form asp-action="MoveAddress" method="post" class="d-inline">
                                                     <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />
                                                     <input type="hidden" name="routeId" value="@route.Id" />
                                                     <input type="hidden" name="index" value="@i" />
-                                                    <button type="submit" class="btn btn-sm btn-secondary">↓</button>
+                                                    <input type="hidden" name="direction" value="down" />
+                                                    <button type="submit" class="btn btn-sm btn-secondary @(i == route.Addresses.Count - 1 ? "disabled" : "") ">↓</button>
                                                 </form>
                                                 <form asp-action="DeleteAddress" method="post" class="d-inline">
                                                     <input type="hidden" name="vehicleId" value="@Model.Vehicle.Id" />

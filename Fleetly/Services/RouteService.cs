@@ -71,8 +71,10 @@ namespace Fleetly.Services
             {
                 "up" when index > 0 => index - 1,
                 "down" when index < addresses.Count - 1 => index + 1,
-                _ => throw new InvalidOperationException("Invalid move operation")
+                _ => -1
             };
+
+            if (newIndex == -1) return;
 
             (addresses[index], addresses[newIndex]) = (addresses[newIndex], addresses[index]);
             await _routeRepo.UpdateRouteAsync(vehicleId, routeId, route);
