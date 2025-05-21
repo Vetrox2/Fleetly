@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fleetly.Models.Dtos;
 using Fleetly.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 public class VehicleService : IVehicleService
 {
@@ -20,11 +21,33 @@ public class VehicleService : IVehicleService
     public async Task<Vehicle> GetByIdAsync(string id) =>
         await _repo.GetByIdAsync(id);
 
-    public async Task CreateAsync(Vehicle vehicle) =>
+    public async Task CreateAsync(CreateVehicleDto model)
+    {
+        var photoBytes = await MapPhotoToBytes(model.Photo);
+        var vehicle = new Vehicle
+        {
+            Make = model.Make,
+            Model = model.Model,
+            Registration = model.Registration,
+            Year = model.Year,
+            Photo = photoBytes
+        };
         await _repo.CreateAsync(vehicle);
+    }
 
-    public async Task UpdateAsync(string id, UpdateVehicleDetailsDto vehicle) =>
+    public async Task UpdateAsync(string id, UpdateVehicleDetailsViewModel model)
+    {
+        var photoBytes = await MapPhotoToBytes(model.Photo);
+        var vehicle = new UpdateVehicleDetailsDto
+        {
+            Make = model.Make,
+            Model = model.Model,
+            Registration = model.Registration,
+            Year = model.Year,
+            Photo = photoBytes
+        };
         await _repo.UpdateAsync(id, vehicle);
+    }
 
     public async Task DeleteAsync(string id) =>
         await _repo.DeleteAsync(id);
@@ -46,5 +69,19 @@ public class VehicleService : IVehicleService
             AllMakes = makes,
             AllModels = models
         };
+    }
+
+    private async Task<byte[]?> MapPhotoToBytes(IFormFile? photo)
+    {
+        byte[]? photoBytes = null;
+
+        if (photo != null && photo.Length > 0)
+        {
+            using var memoryStream = new MemoryStream();
+            await photo.CopyToAsync(memoryStream);
+            photoBytes = memoryStream.ToArray();
+        }
+        
+        return photoBytes;
     }
 }

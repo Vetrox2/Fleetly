@@ -1,4 +1,5 @@
-﻿using Fleetly.Models.Entities;
+﻿using Fleetly.Models.Dtos;
+using Fleetly.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fleetly.Controllers
@@ -24,7 +25,7 @@ namespace Fleetly.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Vehicle vehicle)
+        public async Task<IActionResult> Create(CreateVehicleDto vehicle)
         {
             await _vehicleService.CreateAsync(vehicle);
             return RedirectToAction(nameof(Index));

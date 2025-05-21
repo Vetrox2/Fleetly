@@ -40,7 +40,7 @@ namespace Fleetly.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateVehicle(string id, UpdateVehicleDetailsDto vehicle)
+        public async Task<IActionResult> UpdateVehicle(string id, UpdateVehicleDetailsViewModel vehicle)
         {
             await _vehicleService.UpdateAsync(id, vehicle);
             return RedirectToAction(nameof(Details), new { id });

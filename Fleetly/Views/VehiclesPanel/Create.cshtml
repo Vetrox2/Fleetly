@@ -1,9 +1,9 @@
-﻿@using Fleetly.Models.Entities
-@model Vehicle
+﻿@using Fleetly.Models.Dtos
+@model CreateVehicleDto
 
 <h2>Dodaj Samochód</h2>
 
-<form asp-action="Create" method="post">
+<form asp-action="Create" method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label>Marka</label>
         <input asp-for="Make" class="form-control" />
@@ -20,9 +20,9 @@
         <label>Rok produkcji</label>
         <input asp-for="Year" class="form-control" />
     </div>
-    @* <div class="form-group">
-        <label>URL Zdjęcia</label>
-        <input asp-for="ImageUrl" class="form-control" />
-    </div> *@
+    <div class="form-group">
+        <label for="Photo" class="form-label">Zdjęcie</label>
+        <input type="file" name="Photo" class="form-control" accept="image/*" />
+    </div>
     <button type="submit" class="btn btn-success mt-2">Dodaj</button>
 </form>

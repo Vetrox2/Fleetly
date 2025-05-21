@@ -32,7 +32,8 @@ namespace Fleetly.Data.Repository
                 .Set(v => v.Make, dto.Make)
                 .Set(v => v.Model, dto.Model)
                 .Set(v => v.Registration, dto.Registration)
-                .Set(v => v.Year, dto.Year);
+                .Set(v => v.Year, dto.Year)
+                .Set(v => v.Photo, dto.Photo);
 
             await _collection.UpdateOneAsync(v => v.Id == id, update);
         }

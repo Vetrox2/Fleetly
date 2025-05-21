@@ -7,24 +7,41 @@
 	<h2 class="mb-4">Vehicle Details</h2>
 	<div class="card mb-5">
 		<div class="card-body">
-			<form asp-action="UpdateVehicle" method="post" class="row g-3">
+			<form asp-action="UpdateVehicle" method="post" class="row g-3" enctype="multipart/form-data">
 				<input type="hidden" name="id" value="@Model.Vehicle.Id" />
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<label for="Make" class="form-label">Make</label>
 					<input asp-for="Vehicle.Make" class="form-control" id="Make" />
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<label for="Model" class="form-label">Model</label>
 					<input asp-for="Vehicle.Model" class="form-control" id="Model" />
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<label for="Registration" class="form-label">Rejestracja</label>
 					<input asp-for="Vehicle.Registration" class="form-control" id="Registration" />
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<label for="Year" class="form-label">Year</label>
 					<input asp-for="Vehicle.Year" type="number" class="form-control" id="Year" />
 				</div>
+				<div class="col-md-3">
+					@if (Model.Vehicle.Photo != null)
+					{
+						var base64 = Convert.ToBase64String(Model.Vehicle.Photo);
+						var imageSrc = $"data:image/png;base64,{base64}";
+						<img src="@imageSrc" width="100%" />
+					}
+					else
+					{
+						<span>Brak zdjęcia</span>
+					}
+				</div>
+				<div class="col-md-3">
+					<label for="Photo" class="form-label">Zdjęcie</label>
+					<input type="file" name="Vehicle.Photo" class="form-control" accept="image/*" />
+				</div>
+
 				<div class="col-12 text-end">
 					<button type="submit" class="btn btn-primary">Update Vehicle</button>
 				</div>
